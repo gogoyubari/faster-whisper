@@ -1123,11 +1123,10 @@ class WhisperModel:
             segment_duration = segment_size * self.feature_extractor.time_per_frame
             segment = pad_or_trim(segment)
 
-            if self.logger.isEnabledFor(logging.DEBUG):
-                continue
-                self.logger.debug(
-                    "Processing segment at %s", format_timestamp(time_offset)
-                )
+            # if self.logger.isEnabledFor(logging.DEBUG):
+            #    self.logger.debug(
+            #        "Processing segment at %s", format_timestamp(time_offset)
+            #    )
 
             previous_tokens = initial_prompt_tokens + all_tokens[prompt_reset_since:]
 
