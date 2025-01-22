@@ -1102,9 +1102,10 @@ class WhisperModel:
             if isinstance(options.initial_prompt, str):
                 initial_prompt = " " + options.initial_prompt.strip()
                 initial_prompt_tokens = tokenizer.encode(initial_prompt)
-                all_tokens.extend(initial_prompt_tokens)
+                # all_tokens.extend(initial_prompt_tokens)
             else:
-                all_tokens.extend(options.initial_prompt)
+                # all_tokens.extend(options.initial_prompt)
+                initial_prompt_tokens = options.initial_prompt
 
         pbar = tqdm(total=content_duration, unit="seconds", disable=not log_progress)
         last_speech_timestamp = 0.0
@@ -1137,12 +1138,13 @@ class WhisperModel:
             segment_duration = segment_size * self.feature_extractor.time_per_frame
             segment = pad_or_trim(segment)
 
-            if self.logger.isEnabledFor(logging.DEBUG):
-                self.logger.debug(
-                    "Processing segment at %s", format_timestamp(time_offset)
-                )
+            # if self.logger.isEnabledFor(logging.DEBUG):
+            #     self.logger.debug(
+            #         "Processing segment at %s", format_timestamp(time_offset)
+            #     )
 
-            previous_tokens = all_tokens[prompt_reset_since:]
+            # previous_tokens = all_tokens[prompt_reset_since:]
+            previous_tokens = initial_prompt_tokens + all_tokens[prompt_reset_since:]
 
             if seek > 0 or encoder_output is None:
                 encoder_output = self.encode(segment)
@@ -1339,6 +1341,9 @@ class WhisperModel:
                     )
 
                 prompt_reset_since = len(all_tokens)
+
+                ### work-around
+                if content_frames-seek <= 1: break
 
             pbar.update(
                 (min(content_frames, seek) - previous_seek)
