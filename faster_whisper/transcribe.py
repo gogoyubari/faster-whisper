@@ -1149,7 +1149,7 @@ class WhisperModel:
 
             # 文末以外のタイムスタンプトークン(<|0.00|> ~ <|30.00|>)を除去
             previous_tokens_str = '|'.join([str(el) for el in previous_tokens])
-            previous_tokens_str = re.sub(r'(?<!\|(11|13|30))\|5\d{4}(\|5\d{4}|$)', '', previous_tokens_str)
+            previous_tokens_str = re.sub(r'(?<!\|0)(?<!\|(11|13|30))(?<!\|(223|253))(?<!\|(1231|1543))\|5\d{4}(\|5\d{4}|$)', '', previous_tokens_str)
             previous_tokens = [int(el) for el in previous_tokens_str.split('|')]
 
             if seek > 0 or encoder_output is None:
